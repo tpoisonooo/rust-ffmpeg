@@ -111,5 +111,6 @@ version  = "0.12"
 optional = true
 
 [dependencies.ffmpeg-sys-next]
-version = "4.4.0"
+git = "https://github.com/Easonzero/rust-ffmpeg-sys"
+branch = "master"
 default-features = false
