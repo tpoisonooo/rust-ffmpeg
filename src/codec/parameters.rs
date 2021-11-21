@@ -4,6 +4,7 @@ use super::{Context, Id};
 use ffi::*;
 use media;
 
+#[allow(dyn_drop)]
 pub struct Parameters {
     ptr: *mut AVCodecParameters,
     owner: Option<Rc<dyn Drop>>,
@@ -11,6 +12,7 @@ pub struct Parameters {
 
 unsafe impl Send for Parameters {}
 
+#[allow(dyn_drop)]
 impl Parameters {
     pub unsafe fn wrap(ptr: *mut AVCodecParameters, owner: Option<Rc<dyn Drop>>) -> Self {
         Parameters { ptr, owner }

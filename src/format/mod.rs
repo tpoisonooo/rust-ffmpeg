@@ -15,6 +15,7 @@ pub use self::format::{list, Input, Output};
 
 pub mod network;
 
+use libc::c_char;
 use std::ffi::{CStr, CString};
 use std::path::Path;
 use std::ptr;
@@ -140,6 +141,37 @@ pub fn open_with<P: AsRef<Path>>(
 
                 e => Err(Error::from(e)),
             },
+        }
+    }
+}
+
+pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
+    if !cfg!(target_os = "linux") {
+        return Err(Error::Bug);
+    }
+
+    let string: &str = "v4l2";
+    let bytes: Vec<u8> = String::from(string).into_bytes();
+    let mut c_chars: Vec<i8> = bytes.iter().map(|c| *c as i8).collect::<Vec<i8>>();
+    c_chars.push(0); // null terminator
+    let format: *mut c_char = c_chars.as_mut_ptr();
+
+    unsafe {
+        let mut ps = ptr::null_mut();
+        let path = from_path(path);
+
+        let input_format = av_find_input_format(format);
+
+        match avformat_open_input(&mut ps, path.as_ptr(), input_format, ptr::null_mut()) {
+            0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
+                r if r >= 0 => Ok(context::Input::wrap(ps)),
+                e => {
+                    avformat_close_input(&mut ps);
+                    Err(Error::from(e))
+                }
+            },
+
+            e => Err(Error::from(e)),
         }
     }
 }

@@ -1,6 +1,6 @@
 extern crate ffmpeg_next as ffmpeg;
 
-use ffmpeg::format::{input, Pixel};
+use ffmpeg::format::{input_device, Pixel};
 use ffmpeg::media::Type;
 use ffmpeg::software::scaling::{context::Context, flag::Flags};
 use ffmpeg::util::frame::video::Video;
@@ -10,8 +10,8 @@ use std::io::prelude::*;
 
 fn main() -> Result<(), ffmpeg::Error> {
     ffmpeg::init().unwrap();
-
-    if let Ok(mut ictx) = input(&env::args().nth(1).expect("Cannot open file.")) {
+    
+    if let Ok(mut ictx) = input_device(&env::args().nth(1).expect("Cannot open file.")) {
         let input = ictx
             .streams()
             .best(Type::Video)
@@ -52,6 +52,8 @@ fn main() -> Result<(), ffmpeg::Error> {
         }
         decoder.send_eof()?;
         receive_and_process_decoded_frames(&mut decoder)?;
+    } else {
+        println!("open failed");
     }
 
     Ok(())

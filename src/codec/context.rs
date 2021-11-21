@@ -9,6 +9,7 @@ use libc::c_int;
 use media;
 use {Codec, Error};
 
+#[allow(dyn_drop)]
 pub struct Context {
     ptr: *mut AVCodecContext,
     owner: Option<Rc<dyn Drop>>,
@@ -16,6 +17,7 @@ pub struct Context {
 
 unsafe impl Send for Context {}
 
+#[allow(dyn_drop)]
 impl Context {
     pub unsafe fn wrap(ptr: *mut AVCodecContext, owner: Option<Rc<dyn Drop>>) -> Self {
         Context { ptr, owner }
