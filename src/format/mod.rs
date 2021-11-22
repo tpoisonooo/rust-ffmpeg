@@ -146,10 +146,6 @@ pub fn open_with<P: AsRef<Path>>(
 }
 
 pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
-    if !cfg!(target_os = "linux") {
-        return Err(Error::Bug);
-    }
-
     let string: &str = "v4l2";
     let bytes: Vec<u8> = String::from(string).into_bytes();
     let mut c_chars: Vec<i8> = bytes.iter().map(|c| *c as i8).collect::<Vec<i8>>();
@@ -177,6 +173,15 @@ pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
 }
 
 pub fn input<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
+    let os_str = path.as_ref().as_os_str().to_str().unwrap();
+    if os_str.find("/dev/video") != None {
+        if cfg!(target_os = "linux") {
+            return input_device(path);
+        } else {
+            return Err(Error::Bug);
+        }
+    }
+
     unsafe {
         let mut ps = ptr::null_mut();
         let path = from_path(path);
