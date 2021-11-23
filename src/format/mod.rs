@@ -15,6 +15,7 @@ pub use self::format::{list, Input, Output};
 
 pub mod network;
 
+#[cfg(feature = "open-camera")]
 use libc::c_char;
 use std::ffi::{CStr, CString};
 use std::path::Path;
@@ -174,12 +175,16 @@ pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
 }
 
 pub fn input<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
-    let os_str = path.as_ref().as_os_str().to_str().unwrap();
-    if os_str.find("/dev/video") != None && cfg!(feature = "open-camera") {
-        if cfg!(target_os = "linux") {
-            return input_device(path);
-        } else {
-            return Err(Error::Bug);
+    #[cfg(feature = "open-camera")]
+    {
+        let os_str = path.as_ref().as_os_str().to_str().unwrap();
+
+        if os_str.find("/dev/video") != None {
+            if cfg!(target_os = "linux") {
+                return input_device(path);
+            } else {
+                return Err(Error::Bug);
+            }
         }
     }
 
