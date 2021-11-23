@@ -85,6 +85,7 @@ build-lib-x265             = ["ffmpeg-sys-next/build-lib-x265"]
 build-lib-avs              = ["ffmpeg-sys-next/build-lib-avs"]
 build-lib-xvid             = ["ffmpeg-sys-next/build-lib-xvid"]
 
+
 # protocols
 build-lib-smbclient = ["ffmpeg-sys-next/build-lib-smbclient"]
 build-lib-ssh       = ["ffmpeg-sys-next/build-lib-ssh"]
@@ -99,6 +100,8 @@ postprocessing      = ["ffmpeg-sys-next/postproc"]
 software-resampling = ["ffmpeg-sys-next/swresample"]
 software-scaling    = ["ffmpeg-sys-next/swscale", "codec"]
 
+open-camera = ["ffmpeg-sys-next/open-camera"]
+
 # platforms
 rpi = []
 
@@ -111,6 +114,8 @@ version  = "0.12"
 optional = true
 
 [dependencies.ffmpeg-sys-next]
-git = "https://github.com/tpoisonooo/rust-ffmpeg-sys"
-branch = "master"
+# git = "https://github.com/tpoisonooo/rust-ffmpeg-sys"
+# rev = "cd3e2a3"
+path = "/home/konghuanjun/GitProjects/tpoisonooo/rust-ffmpeg-sys"
+
 default-features = false

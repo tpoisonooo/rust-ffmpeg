@@ -145,6 +145,7 @@ pub fn open_with<P: AsRef<Path>>(
     }
 }
 
+#[cfg(feature = "open-camera")]
 pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
     let string: &str = "v4l2";
     let bytes: Vec<u8> = String::from(string).into_bytes();
@@ -174,7 +175,7 @@ pub fn input_device<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
 
 pub fn input<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
     let os_str = path.as_ref().as_os_str().to_str().unwrap();
-    if os_str.find("/dev/video") != None {
+    if os_str.find("/dev/video") != None && cfg!(feature = "open-camera") {
         if cfg!(target_os = "linux") {
             return input_device(path);
         } else {
