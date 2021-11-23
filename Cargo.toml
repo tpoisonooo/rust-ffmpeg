@@ -114,8 +114,7 @@ version  = "0.12"
 optional = true
 
 [dependencies.ffmpeg-sys-next]
-# git = "https://github.com/tpoisonooo/rust-ffmpeg-sys"
-# rev = "cd3e2a3"
-path = "/home/konghuanjun/GitProjects/tpoisonooo/rust-ffmpeg-sys"
+git = "https://github.com/tpoisonooo/rust-ffmpeg-sys"
+rev = "cd3e2a3"
 
 default-features = false
